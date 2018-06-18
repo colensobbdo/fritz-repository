@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>ai.fritz</groupId>
+  <artifactId>core</artifactId>
+  <versioning>
+    <release>1.0.0-beta</release>
+    <versions>
+      <version>1.0.0-beta</version>
+    </versions>
+    <lastUpdated>20180618192632</lastUpdated>
+  </versioning>
+</metadata>
