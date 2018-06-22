@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ai.fritz</groupId>
-  <artifactId>custom-model-tfmobile</artifactId>
-  <version>1.0.0-beta</version>
+  <artifactId>custom-model-tflite</artifactId>
+  <version>1.0.0-beta-1</version>
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
@@ -15,16 +15,9 @@
     </dependency>
     <dependency>
       <groupId>org.tensorflow</groupId>
-      <artifactId>tensorflow-android</artifactId>
-      <version>1.8.0</version>
-      <type>aar</type>
+      <artifactId>tensorflow-lite</artifactId>
+      <version>+</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 </project>
