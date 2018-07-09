@@ -3,10 +3,10 @@
   <groupId>ai.fritz</groupId>
   <artifactId>core</artifactId>
   <versioning>
-    <release>1.0.0-beta.1</release>
+    <release>1.0.0-beta-test</release>
     <versions>
-      <version>1.0.0-beta.1</version>
+      <version>1.0.0-beta-test</version>
     </versions>
-    <lastUpdated>20180629152046</lastUpdated>
+    <lastUpdated>20180709185221</lastUpdated>
   </versioning>
 </metadata>
