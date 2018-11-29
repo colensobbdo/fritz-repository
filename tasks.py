@@ -84,8 +84,6 @@ def update_version(ctx, new_version):
 
     _update_changelog(new_version)
 
-    # os.system('git commit -am "Bump to version {}"'.format(new_version))
-
 
 @task(default=True)
 def list_tasks(ctx):
