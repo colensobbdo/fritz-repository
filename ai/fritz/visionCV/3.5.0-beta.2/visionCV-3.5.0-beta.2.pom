@@ -8,12 +8,6 @@
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
-      <groupId>FritzSDK</groupId>
-      <artifactId>openCVLibrary341</artifactId>
-      <version>unspecified</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>ai.fritz</groupId>
       <artifactId>vision</artifactId>
       <version>3.5.0-beta.2</version>
