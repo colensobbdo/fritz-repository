@@ -3,10 +3,10 @@
   <groupId>ai.fritz</groupId>
   <artifactId>vision-image-label-model</artifactId>
   <versioning>
-    <release>3.7.1</release>
+    <release>3.7.2</release>
     <versions>
-      <version>3.7.1</version>
+      <version>3.7.2</version>
     </versions>
-    <lastUpdated>20190729142628</lastUpdated>
+    <lastUpdated>20190730165346</lastUpdated>
   </versioning>
 </metadata>
