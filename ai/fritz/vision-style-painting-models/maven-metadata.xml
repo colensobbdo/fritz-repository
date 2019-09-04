@@ -3,10 +3,10 @@
   <groupId>ai.fritz</groupId>
   <artifactId>vision-style-painting-models</artifactId>
   <versioning>
-    <release>3.8.3</release>
+    <release>4.0.0-beta.2</release>
     <versions>
-      <version>3.8.3</version>
+      <version>4.0.0-beta.2</version>
     </versions>
-    <lastUpdated>20190903174249</lastUpdated>
+    <lastUpdated>20190904173458</lastUpdated>
   </versioning>
 </metadata>
