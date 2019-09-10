@@ -5,7 +5,178 @@ Change Log
 
 ---
 
-## [2.0.0](https://github.com/fritzlabs/swift-framework/releases/tag/2.0.0)
+## [4.0.0]
+
+In the latest release, we've several improvements listed below.
+
+This repo on github moving forward will be deprecated in favor of hosting our SDK in a new maven repository:
+
+Change:
+
+maven {
+    url 'https://raw.github.com/fritzlabs/fritz-repository/master'
+}
+
+To:
+
+maven {
+    url "https://fritz.mycloudrepo.io/public/repositories/android"
+}
+
+Changes
+* Adding support for model variants (fast, accurate, small)
+* Removing deprecated methods for the result classes.
+* 2x speed improvement for image processing with Renderscript.
+* Adding TFL support for CPU threads, GPU Delegate, and NNAPI
+* Improved rendering on Surface views
+* Improve segmentation blend mode (hair coloring)
+
+Migrating from 3.x.x to 4.x.x
+
+**Core**
+* Image rotation is now an enum.
+
+```
+// Old version
+int imgRotation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
+FritzVisionImage visionImage = FritzVisionImage.fromBitmap(bitmap, imgRotation);
+
+// Change
+ImageRotation imageRotation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
+FritzVisionImage visionImage = FritzVisionImage.fromBitmap(bitmap, imageRotation);
+```
+
+**FritzVision**
+
+- Add RenderScript support to your app
+```
+// In your app/build.gradle
+
+android {
+    defaultConfig {
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
+    }
+}
+```
+
+- For any of the predictor options, you can now declare option in the following way:
+
+```
+// Old
+FritzVisionSegmentPredictorOptions options = FritzVisionSegmentPredictorOptions.Builder()
+    .targetConfidenceScore(.3f);
+    .build();
+    
+// New
+FritzVisionSegmentPredictorOptions options = FritzVisionSegmentPredictorOptions();
+options.confidenceThreshold = .3f;
+```
+
+**Image Segmentation**
+
+* Renaming Classes ("Segment" -> "Segmentation"):
+    - FritzVisionSegmentPredictor -> FritzVisionSegmentationPredictor
+    - FritzVisionSegmentResult -> FritzVisionSegmentationResult
+    - FritzVisionSegmentPredictorOptions -> FritzVisionSegmentationPredictorOptions
+    - MaskType -> MaskClass
+
+* Model dependencies:
+    * Sky Segmentation:
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-sky-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new SkySegmentationManagedModelFast();
+              ```
+    * Pet Segmentation
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-pet-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new PetSegmentationManagedModelFast();
+              ```
+     * Hair Segmentation
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-hair-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new HairSegmentationManagedModelFast();
+              ```
+     * Living Room Segmentation
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-living-room-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new LivingRoomSegmentationManagedModelFast();
+              ```
+     * Outdoor Segmentation
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-outdoor-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new OutdoorSegmentationManagedModelFast();
+              ```
+     * People Segmentation
+        * Fast Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-people-segmentation-model-fast:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new PeopleSegmentationManagedModelFast();
+              ```
+        * Accurate Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-people-segmentation-model-accurate:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new PeopleSegmentationManagedModelAccurate();
+              ```
+        * Small Variant
+            * Including it on device (in app/build.gradle):
+              ```
+                implementation "ai.fritz:vision-people-segmentation-model-small:4.x.x"
+              ```
+            * Downloading it OTA:
+              ```
+                FritzManagedModel managedModel = new PeopleSegmentationManagedModelSmall();
+              ```
+* Blend Mode:
+
+Alpha value is specified on the created mask. The class ``BlendModeType`` is removed.
+```
+// Old
+BlendMode blendMode = BlendModeType.SOFT_LIGHT.create();
+Bitmap maskBitmap = hairResult.buildSingleClassMask(MaskType.HAIR, blendMode.getAlpha(), 1, options.getTargetConfidenceThreshold(), maskColor);
+Bitmap blendedBitmap = visionImage.blend(maskBitmap, blendMode);
+
+// New
+BlendMode blendMode = BlendMode.SOFT_LIGHT;
+Bitmap maskBitmap = hairResult.buildSingleClassMask(MaskClass.HAIR, 180, 1, options.confidenceThreshol, maskColor);
+Bitmap blendedBitmap = visionImage.blend(maskBitmap, blendMode);
+```
+
+
+## [2.0.0]
 
 In the latest release, we've made it easier to access and draw your prediction results to a canvas. For the full API documentation, please visit: https://docs.fritz.ai/android/2.0.0/reference/packages.html.
 
