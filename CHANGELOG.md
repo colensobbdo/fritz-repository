@@ -175,6 +175,163 @@ Bitmap maskBitmap = hairResult.buildSingleClassMask(MaskClass.HAIR, 180, 1, opti
 Bitmap blendedBitmap = visionImage.blend(maskBitmap, blendMode);
 ```
 
+## [3.0.0]
+
+In the latest release, we've several improvements listed below. For the full API documentation, please visit: https://docs.fritz.ai/android/3.0.0/reference/packages.html.
+
+## Changes:
+
+1. Simplify dependencies
+2. Allow for lazy loading models with a FritzManagedModel class.
+3. Saved on-device models stored as a FritzOnDeviceModel
+4. Download models by tags (configured in the webapp)
+5. Model tags + metadata
+
+## To Migrate from 2.x.x to 3.0.0
+
+**Module renaming - In your app/build.gradle file, change these module names**
+
+**2.x.x**
+```
+dependencies {
+    // Image Labeling
+    implementation "ai.fritz:vision-label:2.x.x"
+
+    // Object Detection
+    implementation "ai.fritz:vision-object:2.x.x"
+
+    // Style Transfer
+    implementation "ai.fritz:vision-style-paintings:2.x.x"
+
+    // Image Segmentation
+    implementation "ai.fritz:vision-people-segment:2.x.x"
+    implementation "ai.fritz:vision-living-room-segment:2.x.x"
+    implementation "ai.fritz:vision-outdoor-segment:2.x.x"
+}
+```
+
+**3.x.x**
+
+```
+dependencies {
+    // Image Labeling
+    implementation "ai.fritz:vision-image-label-model:3.x.x"
+
+    // Object Detection
+    implementation "ai.fritz:vision-object-detection-model:3.x.x"
+
+    // Style Transfer
+    implementation "ai.fritz:vision-style-painting-models:3.x.x"
+
+    // Image Segmentation
+    implementation "ai.fritz:vision-people-segmentation-model:3.x.x"
+    implementation "ai.fritz:vision-living-room-segmentation-model:3.x.x"
+    implementation "ai.fritz:vision-outdoor-segmentation-model:3.x.x"
+}
+```
+
+Several dependencies have been removed and the functionality is now in FritzVision
+
+- ai.fritz:style-base
+- ai.fritz:image-segmentation
+
+
+**Using FritzManagedModel and FritzOnDeviceModel**
+
+In order to provide lazy loading models, we've created 2 separate classes to define models loaded
+into Vision predictors and Custom Model intepreters: FritzManagedModel and FritzOnDeviceModel.
+
+Why we made this change?
+- Decrease initial app size through lazy loading - Allow developers to manage their app size and download models over the air.
+- Simplify the dependency chain - Allow developers to use only the FritzCore + FritzVision dependency in order to get started.
+- Use Custom Models with the Vision API- Developers can use custom models with the existing Vision API by plugging it into an existing predictor (e.g ObjectDetection). We provide model training templates that you can use on your own training data.
+
+**2.x.x** - You would define a predictor like so:
+```
+FritzVisionObjectPredictor objectPredictor = new FritzVisionObjectPredictor();
+FritzVisionObjectResult objectResult = objectPredictor.predict(fritzVisionImage);
+List<FritzVisionObject> visionObjects = objectResult.getVisionObjects();
+```
+
+**3.x.x** - You have 2 options of including a model for on-device inference:
+
+1. **Include it directly in your app build.** This increases your app size but your users will be able to access
+the model immediately once they download it from the app store.
+    
+    **Using a Vision Predictor with a FritzOnDeviceModel:**
+    ```
+    FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
+    FritzVisionObjectPredictor predictor = FritzVision.ObjectDetection.getPredictor();
+    ```
+
+    **Using a Custom Model with a FritzOnDeviceModel:**
+    ```
+    String modelPath = "<PATH TO YOUR MODEL FILE STORED IN THE ASSETS FOLDER>";
+    String modelId = "<YOUR MODEL ID>";
+    int modelVersion = 1;
+    FritzOnDeviceModel onDeviceModel = new FritzOnDeviceModel(modelPath, modelId, modelVersion);
+    FritzTFLiteInterpreter tflite = new FritzTFLiteInterpreter(onDeviceModel);
+    ```
+
+2. **Lazy load the model the first time the app launches.** This reduces your initial app size when your users install it from the store, but you will have to handle the experience before the model is loaded onto the device.
+    
+    **Lazy loading a Vision Predictor:**
+    ```
+    // Global predictor variable
+    FritzVisionObjectPredictor predictor;
+
+    // Load your predictor
+    FritzManagedModel managedModel = new ObjectDetectionManagedModel();
+    FritzVision.ObjectDetection.loadPredictor(managedModel, new PredictorStatusListener<FritzVisionObjectPredictor>() {
+        @Override
+        public void onPredictorReady(FritzVisionObjectPredictor objectPredictor) {
+            predictor = objectPredictor;
+        }
+    });
+
+    // Manage access to specific features and check if the predictor is ready to use.
+    if(predictor != null) {
+        predictor.predict(...);
+    }
+    ```
+
+    **Lazy loading a Custom Model**
+    ```
+    FritzManagedModel managedModel = new FritzManagedModel("<YOUR MODEL ID>");
+    FritzModelManager modelManager = new FritzModelManager(managedModel);
+    modelManager.loadModel(new ModelReadyListener() {
+        @Override
+        public void onModelReady(FritzOnDeviceModel onDeviceModel) {
+            tflite = new FritzTFLiteInterpreter(onDeviceModel);
+            Log.d(TAG, "Interpreter is now ready to use");
+        }
+    });
+    ```
+
+**Vision API changes**
+
+**2.x.x** - Initialize the predictor directly
+```
+FritzVisionObjectPredictor objectPredictor = new FritzVisionObjectPredictor(options);
+FritzVisionStylePredictor stylePredictor = new FritzVisionStylePredictor(options);
+FritzVisionLabelPredictor labelPredictor = new FritzVisionLabelPredictor(options);
+FritzVisionSegmentPredictor segmentPredictor = new FritzVisionSegmentPredictor(options);
+```
+
+**3.x.x** - Accessing Vision Predictors with a loaded model (a class that extends FritzOnDeviceModel) to use immediately.
+```
+FritzVisionObjectPredictor objectPredictor = FritzVision.ObjectDetection.getPredictor(onDeviceModel, options);
+FritzVisionStylePredictor stylePredictor = FritzVision.StyleTransfer.getPredictor(onDeviceModel, options);
+FritzVisionLabelPredictor labelPredictor = FritzVision.ImageLabeling.getPredictor(onDeviceModel, options);
+FritzVisionSegmentPredictor segmentPredictor = FritzVision.ImageSegmentation.getPredictor(onDeviceModel, options);
+```
+
+## New Features in 3.0.0
+
+- [Pose Estimation](https://docs.fritz.ai/develop/vision/pose-estimation/android.html)
+- [Tag + Metadata](https://docs.fritz.ai/develop/custom-models/tag-based/android.html)
+- [Custom Models with the Vision API](https://docs.fritz.ai/develop/vision/style-transfer/android.html#how-to-customize)
+
 
 ## [2.0.0]
 
