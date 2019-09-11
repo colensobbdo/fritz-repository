@@ -24,11 +24,11 @@ maven {
 }
 
 Changes
-* Adding support for model variants (fast, accurate, small). 
+* Adding support for model variants (fast, accurate, small) so you can build the perfect experience for your users. 
      - Fast models are optimized for runtime performance with an accuracy tradeoff. This should be used in cases where model predictions need to happen quickly (e.g video processing, live preview, etc). This comes with a tradeoff in accuracy.
      - Accurate models are optimized to display the best model prediction with a speed tradeoff. This should be used in cases where you're dealing with still images (i.e photo editing)
      - Small models are optimized for model size at the cost of accuracy. This should be used in cases where developers are cautious of bloating their apps with models.
-* Models now have their own versioning system separate from the SDK and follow semantic versioning.
+* Models now have their own versioning system separate from the SDK and follow semantic versioning. This enables Fritz to release new versions of models without changing any existing user experiences.
 * Removing deprecated methods for the result classes.
 * 2x speed improvement for image processing with Renderscript.
 * Adding TFL support for CPU threads, GPU Delegate, and NNAPI
