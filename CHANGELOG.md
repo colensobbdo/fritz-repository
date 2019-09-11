@@ -24,12 +24,17 @@ maven {
 }
 
 Changes
-* Adding support for model variants (fast, accurate, small)
+* Adding support for model variants (fast, accurate, small). 
+     - Fast models are optimized for runtime performance with an accuracy tradeoff. This should be used in cases where model predictions need to happen quickly (e.g video processing, live preview, etc). This comes with a tradeoff in accuracy.
+     - Accurate models are optimized to display the best model prediction with a speed tradeoff. This should be used in cases where you're dealing with still images (i.e photo editing)
+     - Small models are optimized for model size at the cost of accuracy. This should be used in cases where developers are cautious of bloating their apps with models.
+* Models now have their own versioning system separate from the SDK and follow semantic versioning.
 * Removing deprecated methods for the result classes.
 * 2x speed improvement for image processing with Renderscript.
 * Adding TFL support for CPU threads, GPU Delegate, and NNAPI
 * Improved rendering on Surface views
 * Improve segmentation blend mode (hair coloring)
+
 
 Migrating from 3.x.x to 4.x.x
 
@@ -82,11 +87,12 @@ options.confidenceThreshold = .3f;
     - MaskType -> MaskClass
 
 * Model dependencies:
+    * The libraries for models are now on separate versions, allowing for individual updates and releases on when new improvements are made. As of the release, all models are now currently on version 1.0.0.
     * Sky Segmentation:
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-sky-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-sky-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -96,7 +102,7 @@ options.confidenceThreshold = .3f;
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-pet-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-pet-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -106,7 +112,7 @@ options.confidenceThreshold = .3f;
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-hair-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-hair-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -116,7 +122,7 @@ options.confidenceThreshold = .3f;
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-living-room-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-living-room-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -126,7 +132,7 @@ options.confidenceThreshold = .3f;
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-outdoor-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-outdoor-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -136,7 +142,7 @@ options.confidenceThreshold = .3f;
         * Fast Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-people-segmentation-model-fast:4.x.x"
+                implementation "ai.fritz:vision-people-segmentation-model-fast:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -145,7 +151,7 @@ options.confidenceThreshold = .3f;
         * Accurate Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-people-segmentation-model-accurate:4.x.x"
+                implementation "ai.fritz:vision-people-segmentation-model-accurate:1.0.0"
               ```
             * Downloading it OTA:
               ```
@@ -154,7 +160,7 @@ options.confidenceThreshold = .3f;
         * Small Variant
             * Including it on device (in app/build.gradle):
               ```
-                implementation "ai.fritz:vision-people-segmentation-model-small:4.x.x"
+                implementation "ai.fritz:vision-people-segmentation-model-small:1.0.0"
               ```
             * Downloading it OTA:
               ```
