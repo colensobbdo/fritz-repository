@@ -5,7 +5,7 @@ Change Log
 
 ---
 
-## [5.0.0]
+## [5.0.0-beta.3]
 
 **Changes:**
 
