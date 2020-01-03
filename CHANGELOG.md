@@ -10,94 +10,73 @@ Change Log
 **Changes:**
 
 * Updated image segmentation models to run on the GPU resulting in significant speedups for inference times.
-* Added the FritzVisionVideo API
+* Added the ``FritzVisionVideo`` API
 * Removed the dependency on fritz-vision from the model dependencies.
-* Added ability to initialize FritzOnDeviceModels with a json file stored in the assets folder.
+* Added ability to initialize ``FritzOnDeviceModel`` with a json file stored in the assets folder.
 * Updated Pose Estimation API to work for custom models.
-* Moved pretrained model declarations to ``FritzVisionModels``.
+* Moved pretrained model declarations in separate packages to ``FritzVisionModels`` defined in "ai.fritz:vision"
 
 **Migrating from 4.x.x to 5.x.x:**
 
 Initializing pretrained models (must be used with model dependencies >= 3.0.0)
 
 In your app/build.gradle:
-```
-// Before v4
-dependencies {
-    implementation "ai.fritz:vision:4.2.2"
-    implementation "ai.fritz:vision-sky-segmentation-model-fast:2.0.0"
-}
 
-// Updated v5
+```diff
 dependencies {
-    implementation "ai.fritz:vision:5.0.0-beta.2"
-    implementation "ai.fritz:vision-sky-segmentation-model-fast:3.0.0-beta.1"
+-   implementation "ai.fritz:vision:4.2.2"
++   implementation "ai.fritz:vision:5.0.0-beta.3"
+-   implementation "ai.fritz:vision-sky-segmentation-model-fast:2.0.0"
++   implementation "ai.fritz:vision-sky-segmentation-model-fast:3.0.0-beta.1"
 }
 ```
 
 Code Changes:
 
 Image Segmentation (each model has 3 variants)
-```
-// Before v4
-SegmentationOnDeviceModel onDeviceModel = new SkySegmentationOnDeviceModelSmall();
-SegmentationOnDeviceModel onDeviceModel = new SkySegmentationOnDeviceModelFast();
-SegmentationOnDeviceModel onDeviceModel = new SkySegmentationOnDeviceModelAccurate();
-
-// Updated v5
-SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.SMALL);
-SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.FAST);
-SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.ACCURATE);
+```diff
+-        SkySegmentationOnDeviceModelFast onDeviceModel = new SkySegmentationOnDeviceModelFast();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.FAST);
+-        SkySegmentationOnDeviceModelSmall onDeviceModel = new SkySegmentationOnDeviceModelSmall();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.SMALL);
+-        SkySegmentationOnDeviceModelSmall onDeviceModel = new SkySegmentationOnDeviceModelAccurate();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.ACCURATE)
 ```
 
 Pose Estimation (each model has 3 variants)
-```
-// Before v4
-FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelSmall();
-FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelFast();
-FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelAccurate();
-
-// Updated v5
-PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.SMALL);
-PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.FAST);
-PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
+```diff
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelSmall();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.SMALL);
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelFast();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.FAST);
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelAccurate();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
 ```
 
 Style Transfer (no model variants)
-```
-// Before v4
-FritzOnDeviceModel[] paintingStyles = PaintingStyles.getAll();
-FritzOnDeviceModel starryNightModel = PaintingStyles.STARRY_NIGHT;
-
-FritzOnDeviceModel[] patternStyles = PatternStyles.getAll();
-FritzOnDeviceModel comicModel = PatternStyles.COMIC;
-
-// Updated v5
-PaintingStyleModels paintingModels = FritzVisionModels.getPaintingStyleModels();
-FritzOnDeviceModel[] styles = paintingModels.getAll();
-FritzOnDeviceModel starryNightModel = paintingModels.getStarryNight();
-
-PatternStyleModels patternModels = FritzVisionModels.getPatternStyleModels();
-FritzOnDeviceModel[] styles = patternModels.getAll();
-FritzOnDeviceModel comicModel = patternModels.getComic();
+```diff
+-        FritzOnDeviceModel[] paintingStyles = PaintingStyles.getAll();
+-        FritzOnDeviceModel starryNightModel = PaintingStyles.STARRY_NIGHT;
+-        FritzOnDeviceModel[] patternStyles = PatternStyles.getAll();
+-        FritzOnDeviceModel comicModel = PatternStyles.COMIC;
++        PaintingStyleModels paintingModels = FritzVisionModels.getPaintingStyleModels();
++        FritzOnDeviceModel[] styles = paintingModels.getAll();
++        FritzOnDeviceModel starryNightModel = paintingModels.getStarryNight();
++        PatternStyleModels patternModels = FritzVisionModels.getPatternStyleModels();
++        FritzOnDeviceModel[] styles = patternModels.getAll();
++        FritzOnDeviceModel comicModel = patternModels.getComic();
 ```
 
 Image Labeling (no model variants)
-```
-// Before v4
-FritzOnDeviceModel onDeviceModel = new ImageLabelOnDeviceModelFast();
-
-// Updated v5
-FritzOnDeviceModel onDeviceModel = FritzVisionModels.getImageLabelingOnDeviceModel();
+```diff
+-        FritzOnDeviceModel onDeviceModel = new ImageLabelOnDeviceModelFast();
++        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getImageLabelingOnDeviceModel();
 ```
 
 Object Detection (no model variants)
-```
-// Before v4
-FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
-
-// Updated v5
-FritzOnDeviceModel onDeviceModel = FritzVisionModels.getObjectDetectionOnDeviceModel();
+```diff
+-        FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
++        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getObjectDetectionOnDeviceModel();
 ```
 
 ## [4.0.0]
