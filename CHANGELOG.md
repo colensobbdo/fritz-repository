@@ -5,6 +5,80 @@ Change Log
 
 ---
 
+## [5.0.0-beta.3]
+
+**Changes:**
+
+* Updated image segmentation models to run on the GPU resulting in significant speedups for inference times.
+* Added the ``FritzVisionVideo`` API
+* Removed the dependency on fritz-vision from the model dependencies.
+* Added ability to initialize ``FritzOnDeviceModel`` with a json file stored in the assets folder.
+* Updated Pose Estimation API to work for custom models.
+* Moved pretrained model declarations in separate packages to ``FritzVisionModels`` defined in "ai.fritz:vision"
+
+**Migrating from 4.x.x to 5.x.x:**
+
+Initializing pretrained models (must be used with model dependencies >= 3.0.0)
+
+In your app/build.gradle:
+
+```diff
+dependencies {
+-   implementation "ai.fritz:vision:4.2.2"
++   implementation "ai.fritz:vision:5.0.0-beta.3"
+-   implementation "ai.fritz:vision-sky-segmentation-model-fast:2.0.0"
++   implementation "ai.fritz:vision-sky-segmentation-model-fast:3.0.0-beta.1"
+}
+```
+
+Code Changes:
+
+Image Segmentation (each model has 3 variants)
+```diff
+-        SkySegmentationOnDeviceModelFast onDeviceModel = new SkySegmentationOnDeviceModelFast();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.FAST);
+-        SkySegmentationOnDeviceModelSmall onDeviceModel = new SkySegmentationOnDeviceModelSmall();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.SMALL);
+-        SkySegmentationOnDeviceModelSmall onDeviceModel = new SkySegmentationOnDeviceModelAccurate();
++        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.ACCURATE)
+```
+
+Pose Estimation (each model has 3 variants)
+```diff
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelSmall();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.SMALL);
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelFast();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.FAST);
+-        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelAccurate();
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
+```
+
+Style Transfer (no model variants)
+```diff
+-        FritzOnDeviceModel[] paintingStyles = PaintingStyles.getAll();
+-        FritzOnDeviceModel starryNightModel = PaintingStyles.STARRY_NIGHT;
+-        FritzOnDeviceModel[] patternStyles = PatternStyles.getAll();
+-        FritzOnDeviceModel comicModel = PatternStyles.COMIC;
++        PaintingStyleModels paintingModels = FritzVisionModels.getPaintingStyleModels();
++        FritzOnDeviceModel[] styles = paintingModels.getAll();
++        FritzOnDeviceModel starryNightModel = paintingModels.getStarryNight();
++        PatternStyleModels patternModels = FritzVisionModels.getPatternStyleModels();
++        FritzOnDeviceModel[] styles = patternModels.getAll();
++        FritzOnDeviceModel comicModel = patternModels.getComic();
+```
+
+Image Labeling (no model variants)
+```diff
+-        FritzOnDeviceModel onDeviceModel = new ImageLabelOnDeviceModelFast();
++        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getImageLabelingOnDeviceModel();
+```
+
+Object Detection (no model variants)
+```diff
+-        FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
++        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getObjectDetectionOnDeviceModel();
+```
+
 ## [4.0.0]
 
 In the latest release, we've several improvements listed below.
