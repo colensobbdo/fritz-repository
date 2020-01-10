@@ -5,7 +5,7 @@ Change Log
 
 ---
 
-## [5.0.0-beta.3]
+## [5.0.0]
 
 **Changes:**
 
@@ -13,7 +13,7 @@ Change Log
 * Added the ``FritzVisionVideo`` API
 * Removed the dependency on fritz-vision from the model dependencies.
 * Added ability to initialize ``FritzOnDeviceModel`` with a json file stored in the assets folder.
-* Updated Pose Estimation API to work for custom models.
+* Updated Pose Estimation, Object Detection, and Image Labeling API to work for custom models.
 * Moved pretrained model declarations in separate packages to ``FritzVisionModels`` defined in "ai.fritz:vision"
 
 **Migrating from 4.x.x to 5.x.x:**
@@ -41,6 +41,9 @@ Image Segmentation (each model has 3 variants)
 +        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.SMALL);
 -        SkySegmentationOnDeviceModelSmall onDeviceModel = new SkySegmentationOnDeviceModelAccurate();
 +        SegmentationOnDeviceModel onDeviceModel = FritzVisionModels.getSkySegmentationOnDeviceModel(ModelVariant.ACCURATE)
+
+-        FritzManagedModel managedModel = new SkySegmentationManagedModelFast();
++        SegmentationManagedModel managedModel = FritzVisionModels.getSkySegmentationManagedModel(ModelVariant.FAST);
 ```
 
 Pose Estimation (each model has 3 variants)
@@ -51,6 +54,9 @@ Pose Estimation (each model has 3 variants)
 +        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.FAST);
 -        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelAccurate();
 +        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
+
+-        FritzManagedModel managedModel = new PoseEstimationManagedModelFast();
++        PoseManagedModel managedModel = FritzVisionModels.getPoseEstimationManagedModel(ModelVariant.FAST);
 ```
 
 Style Transfer (no model variants)
@@ -70,13 +76,19 @@ Style Transfer (no model variants)
 Image Labeling (no model variants)
 ```diff
 -        FritzOnDeviceModel onDeviceModel = new ImageLabelOnDeviceModelFast();
-+        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getImageLabelingOnDeviceModel();
++        LabelingOnDeviceModel onDeviceModel = FritzVisionModels.getImageLabelingOnDeviceModel();
+
+-        FritzManagedModel managedModel = new ImageLabelOnDeviceModelFast();
++        LabelingManagedModel managedModel = FritzVisionModels.getLabelingManagedModel();
 ```
 
 Object Detection (no model variants)
 ```diff
 -        FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
-+        FritzOnDeviceModel onDeviceModel = FritzVisionModels.getObjectDetectionOnDeviceModel();
++        ObjectDetectionOnDeviceModel onDeviceModel = FritzVisionModels.getObjectDetectionOnDeviceModel();
+
+-        FritzManagedModel managedModel = new ObjectDetectionManagedModel();
++        ObjectDetectionManagedModel managedModel = FritzVisionModels.getObjectDetectionManagedModel();
 ```
 
 ## [4.0.0]
