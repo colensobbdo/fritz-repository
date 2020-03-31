@@ -1,9 +1,53 @@
-Change Log
-==========
+# FritzSDK Change Log
 
 `Fritz` follows [Semantic Versioning](http://semver.org/)
 
 ---
+
+## [6.0.0 (beta.2)]
+- Remove TFM library.
+- Merge the Fritz TFL interpreter with the core library.
+- Refactored core code to use Kotlin.
+- Moved session data into a manager class
+- Added in ability to record annotations from object detection and pose estimation predictors.
+- Fixed issue with landscape mode orientation being mirrored on the front facing camera.
+- Removed deprecated ImageRotation methods in favor of getting the ImageOrientation from the camera view.
+```diff
+-        ImageRotation imageRotation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
++        ImageOrientation orientation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
+
+
+-        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, imageRotation);
++        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, orientation);
+```
+- Change skeleton for Pose estimation to include a label (used in the Data Collection System)
+```diff
+-        Skeleton humanSkeleton = new Skeleton(PART_NAMES, CONNECTED_PART_NAMES, POSE_CHAIN);
++        Skeleton humanSkeleton = new Skeleton("Human", PART_NAMES, CONNECTED_PART_NAMES, POSE_CHAIN);
+```
+
+
+## [5.1.2]
+- Add null check on custom model service
+
+## [5.1.0]
+
+- Adding support for encrypted models.
+- Get orientation depending on camera facing direction. (note: specifying an image rotation when initializing ``FritzVisionImage`` is deprecated.)
+
+```diff
+-        ImageRotation imageRotation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
++        ImageOrientation orientation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
+
+
+-        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, imageRotation);
++        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, imageOrientation);
+```
+
+
+## [5.0.1]
+
+- change method name for fetching a human pose model to ``FritzVisionModels.getHumanPoseEstimationManagedModel(ModelVariant.FAST)``.
 
 ## [5.0.0]
 
@@ -13,7 +57,7 @@ Change Log
 * Added the ``FritzVisionVideo`` API
 * Removed the dependency on fritz-vision from the model dependencies.
 * Added ability to initialize ``FritzOnDeviceModel`` with a json file stored in the assets folder.
-* Updated Pose Estimation, Object Detection, and Image Labeling API to work for custom models.
+* Updated Pose Estimation API to work for custom models.
 * Moved pretrained model declarations in separate packages to ``FritzVisionModels`` defined in "ai.fritz:vision"
 
 **Migrating from 4.x.x to 5.x.x:**
@@ -26,6 +70,7 @@ In your app/build.gradle:
 dependencies {
 -   implementation "ai.fritz:vision:4.2.2"
 +   implementation "ai.fritz:vision:5.0.0-beta.3"
+
 -   implementation "ai.fritz:vision-sky-segmentation-model-fast:2.0.0"
 +   implementation "ai.fritz:vision-sky-segmentation-model-fast:3.0.0-beta.1"
 }
@@ -49,14 +94,14 @@ Image Segmentation (each model has 3 variants)
 Pose Estimation (each model has 3 variants)
 ```diff
 -        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelSmall();
-+        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.SMALL);
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getHumanPoseEstimationOnDeviceModel(ModelVariant.SMALL);
 -        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelFast();
-+        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.FAST);
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getHumanPoseEstimationOnDeviceModel(ModelVariant.FAST);
 -        FritzOnDeviceModel onDeviceModel = new PoseEstimationOnDeviceModelAccurate();
-+        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
++        PoseOnDeviceModel onDeviceModel = FritzVisionModels.getHumanPoseEstimationOnDeviceModel(ModelVariant.ACCURATE);
 
 -        FritzManagedModel managedModel = new PoseEstimationManagedModelFast();
-+        PoseManagedModel managedModel = FritzVisionModels.getPoseEstimationManagedModel(ModelVariant.FAST);
++        PoseManagedModel managedModel = FritzVisionModels.getHumanPoseEstimationManagedModel(ModelVariant.FAST);
 ```
 
 Style Transfer (no model variants)
@@ -91,6 +136,20 @@ Object Detection (no model variants)
 +        ObjectDetectionManagedModel managedModel = FritzVisionModels.getObjectDetectionManagedModel();
 ```
 
+## [4.2.4]
+
+1. ByteImage no longer takes in a buffer
+2. Decoding and Encoding video (beta)
+
+## [4.2.3]
+
+1. ByteImage can be passed to FritzVisionImage which reduces unnecessary conversions.
+
+## [4.2.2]
+
+1. Fix up bug with scrambled images.
+
+
 ## [4.0.0]
 
 In the latest release, we've several improvements listed below.
@@ -100,32 +159,33 @@ This repo on github moving forward will be deprecated in favor of hosting our SD
 Change:
 
 maven {
-    url 'https://raw.github.com/fritzlabs/fritz-repository/master'
+url 'https://raw.github.com/fritzlabs/fritz-repository/master'
 }
 
 To:
 
 maven {
-    url "https://fritz.mycloudrepo.io/public/repositories/android"
+url "https://fritz.mycloudrepo.io/public/repositories/android"
 }
 
 Changes
-* Adding support for model variants (fast, accurate, small) so you can build the perfect experience for your users. 
-     - Fast models are optimized for runtime performance with an accuracy tradeoff. This should be used in cases where model predictions need to happen quickly (e.g video processing, live preview, etc). This comes with a tradeoff in accuracy.
-     - Accurate models are optimized to display the best model prediction with a speed tradeoff. This should be used in cases where you're dealing with still images (i.e photo editing)
-     - Small models are optimized for model size at the cost of accuracy. This should be used in cases where developers are cautious of bloating their apps with models.
-* Models now have their own versioning system separate from the SDK and follow semantic versioning. This enables Fritz to release new versions of models without changing any existing user experiences.
-* Removing deprecated methods for the result classes.
-* 2x speed improvement for image processing with Renderscript.
-* Adding TFL support for CPU threads, GPU Delegate, and NNAPI
-* Improved rendering on Surface views
-* Improve segmentation blend mode (hair coloring)
 
+- Adding support for model variants (fast, accurate, small) so you can build the perfect experience for your users.
+  - Fast models are optimized for runtime performance with an accuracy tradeoff. This should be used in cases where model predictions need to happen quickly (e.g video processing, live preview, etc). This comes with a tradeoff in accuracy.
+  - Accurate models are optimized to display the best model prediction with a speed tradeoff. This should be used in cases where you're dealing with still images (i.e photo editing)
+  - Small models are optimized for model size at the cost of accuracy. This should be used in cases where developers are cautious of bloating their apps with models.
+- Models now have their own versioning system separate from the SDK and follow semantic versioning. This enables Fritz to release new versions of models without changing any existing user experiences.
+- Removing deprecated methods for the result classes.
+- 2x speed improvement for image processing with Renderscript.
+- Adding TFL support for CPU threads, GPU Delegate, and NNAPI
+- Improved rendering on Surface views
+- Improve segmentation blend mode (hair coloring)
 
 Migrating from 3.x.x to 4.x.x
 
 **Core**
-* Image rotation is now an enum.
+
+- Image rotation is now an enum.
 
 ```
 // Old version
@@ -140,6 +200,7 @@ FritzVisionImage visionImage = FritzVisionImage.fromBitmap(bitmap, imageRotation
 **FritzVision**
 
 - Add RenderScript support to your app
+
 ```
 // In your app/build.gradle
 
@@ -158,7 +219,7 @@ android {
 FritzVisionSegmentPredictorOptions options = FritzVisionSegmentPredictorOptions.Builder()
     .targetConfidenceScore(.3f);
     .build();
-    
+
 // New
 FritzVisionSegmentPredictorOptions options = FritzVisionSegmentPredictorOptions();
 options.confidenceThreshold = .3f;
@@ -166,95 +227,97 @@ options.confidenceThreshold = .3f;
 
 **Image Segmentation**
 
-* Renaming Classes ("Segment" -> "Segmentation"):
-    - FritzVisionSegmentPredictor -> FritzVisionSegmentationPredictor
-    - FritzVisionSegmentResult -> FritzVisionSegmentationResult
-    - FritzVisionSegmentPredictorOptions -> FritzVisionSegmentationPredictorOptions
-    - MaskType -> MaskClass
+- Renaming Classes ("Segment" -> "Segmentation"):
 
-* Model dependencies:
-    * The libraries for models are now on separate versions, allowing for individual updates and releases on when new improvements are made. As of the release, all models are now currently on version 1.0.0.
-    * Sky Segmentation:
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-sky-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new SkySegmentationManagedModelFast();
-              ```
-    * Pet Segmentation
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-pet-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new PetSegmentationManagedModelFast();
-              ```
-     * Hair Segmentation
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-hair-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new HairSegmentationManagedModelFast();
-              ```
-     * Living Room Segmentation
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-living-room-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new LivingRoomSegmentationManagedModelFast();
-              ```
-     * Outdoor Segmentation
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-outdoor-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new OutdoorSegmentationManagedModelFast();
-              ```
-     * People Segmentation
-        * Fast Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-people-segmentation-model-fast:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new PeopleSegmentationManagedModelFast();
-              ```
-        * Accurate Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-people-segmentation-model-accurate:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new PeopleSegmentationManagedModelAccurate();
-              ```
-        * Small Variant
-            * Including it on device (in app/build.gradle):
-              ```
-                implementation "ai.fritz:vision-people-segmentation-model-small:1.0.0"
-              ```
-            * Downloading it OTA:
-              ```
-                FritzManagedModel managedModel = new PeopleSegmentationManagedModelSmall();
-              ```
-* Blend Mode:
+  - FritzVisionSegmentPredictor -> FritzVisionSegmentationPredictor
+  - FritzVisionSegmentResult -> FritzVisionSegmentationResult
+  - FritzVisionSegmentPredictorOptions -> FritzVisionSegmentationPredictorOptions
+  - MaskType -> MaskClass
 
-Alpha value is specified on the created mask. The class ``BlendModeType`` is removed.
+- Model dependencies:
+  - The libraries for models are now on separate versions, allowing for individual updates and releases on when new improvements are made. As of the release, all models are now currently on version 1.0.0.
+  - Sky Segmentation:
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-sky-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new SkySegmentationManagedModelFast();
+        ```
+  - Pet Segmentation
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-pet-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new PetSegmentationManagedModelFast();
+        ```
+  - Hair Segmentation
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-hair-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new HairSegmentationManagedModelFast();
+        ```
+  - Living Room Segmentation
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-living-room-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new LivingRoomSegmentationManagedModelFast();
+        ```
+  - Outdoor Segmentation
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-outdoor-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new OutdoorSegmentationManagedModelFast();
+        ```
+  - People Segmentation
+    - Fast Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-people-segmentation-model-fast:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new PeopleSegmentationManagedModelFast();
+        ```
+    - Accurate Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-people-segmentation-model-accurate:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new PeopleSegmentationManagedModelAccurate();
+        ```
+    - Small Variant
+      - Including it on device (in app/build.gradle):
+        ```
+          implementation "ai.fritz:vision-people-segmentation-model-small:1.0.0"
+        ```
+      - Downloading it OTA:
+        ```
+          FritzManagedModel managedModel = new PeopleSegmentationManagedModelSmall();
+        ```
+- Blend Mode:
+
+Alpha value is specified on the created mask. The class `BlendModeType` is removed.
+
 ```
 // Old
 BlendMode blendMode = BlendModeType.SOFT_LIGHT.create();
@@ -284,6 +347,7 @@ In the latest release, we've several improvements listed below. For the full API
 **Module renaming - In your app/build.gradle file, change these module names**
 
 **2.x.x**
+
 ```
 dependencies {
     // Image Labeling
@@ -327,18 +391,19 @@ Several dependencies have been removed and the functionality is now in FritzVisi
 - ai.fritz:style-base
 - ai.fritz:image-segmentation
 
-
 **Using FritzManagedModel and FritzOnDeviceModel**
 
 In order to provide lazy loading models, we've created 2 separate classes to define models loaded
 into Vision predictors and Custom Model intepreters: FritzManagedModel and FritzOnDeviceModel.
 
 Why we made this change?
+
 - Decrease initial app size through lazy loading - Allow developers to manage their app size and download models over the air.
 - Simplify the dependency chain - Allow developers to use only the FritzCore + FritzVision dependency in order to get started.
 - Use Custom Models with the Vision API- Developers can use custom models with the existing Vision API by plugging it into an existing predictor (e.g ObjectDetection). We provide model training templates that you can use on your own training data.
 
 **2.x.x** - You would define a predictor like so:
+
 ```
 FritzVisionObjectPredictor objectPredictor = new FritzVisionObjectPredictor();
 FritzVisionObjectResult objectResult = objectPredictor.predict(fritzVisionImage);
@@ -347,27 +412,28 @@ List<FritzVisionObject> visionObjects = objectResult.getVisionObjects();
 
 **3.x.x** - You have 2 options of including a model for on-device inference:
 
-1. **Include it directly in your app build.** This increases your app size but your users will be able to access
-the model immediately once they download it from the app store.
-    
-    **Using a Vision Predictor with a FritzOnDeviceModel:**
-    ```
-    FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
-    FritzVisionObjectPredictor predictor = FritzVision.ObjectDetection.getPredictor();
-    ```
+1.  **Include it directly in your app build.** This increases your app size but your users will be able to access
+    the model immediately once they download it from the app store.
 
-    **Using a Custom Model with a FritzOnDeviceModel:**
-    ```
-    String modelPath = "<PATH TO YOUR MODEL FILE STORED IN THE ASSETS FOLDER>";
-    String modelId = "<YOUR MODEL ID>";
-    int modelVersion = 1;
-    FritzOnDeviceModel onDeviceModel = new FritzOnDeviceModel(modelPath, modelId, modelVersion);
-    FritzTFLiteInterpreter tflite = new FritzTFLiteInterpreter(onDeviceModel);
-    ```
+        **Using a Vision Predictor with a FritzOnDeviceModel:**
+        ```
+        FritzOnDeviceModel onDeviceModel = new ObjectDetectionOnDeviceModel();
+        FritzVisionObjectPredictor predictor = FritzVision.ObjectDetection.getPredictor();
+        ```
 
-2. **Lazy load the model the first time the app launches.** This reduces your initial app size when your users install it from the store, but you will have to handle the experience before the model is loaded onto the device.
-    
+        **Using a Custom Model with a FritzOnDeviceModel:**
+        ```
+        String modelPath = "<PATH TO YOUR MODEL FILE STORED IN THE ASSETS FOLDER>";
+        String modelId = "<YOUR MODEL ID>";
+        int modelVersion = 1;
+        FritzOnDeviceModel onDeviceModel = new FritzOnDeviceModel(modelPath, modelId, modelVersion);
+        FritzTFLiteInterpreter tflite = new FritzTFLiteInterpreter(onDeviceModel);
+        ```
+
+2.  **Lazy load the model the first time the app launches.** This reduces your initial app size when your users install it from the store, but you will have to handle the experience before the model is loaded onto the device.
+
     **Lazy loading a Vision Predictor:**
+
     ```
     // Global predictor variable
     FritzVisionObjectPredictor predictor;
@@ -388,6 +454,7 @@ the model immediately once they download it from the app store.
     ```
 
     **Lazy loading a Custom Model**
+
     ```
     FritzManagedModel managedModel = new FritzManagedModel("<YOUR MODEL ID>");
     FritzModelManager modelManager = new FritzModelManager(managedModel);
@@ -403,6 +470,7 @@ the model immediately once they download it from the app store.
 **Vision API changes**
 
 **2.x.x** - Initialize the predictor directly
+
 ```
 FritzVisionObjectPredictor objectPredictor = new FritzVisionObjectPredictor(options);
 FritzVisionStylePredictor stylePredictor = new FritzVisionStylePredictor(options);
@@ -411,6 +479,7 @@ FritzVisionSegmentPredictor segmentPredictor = new FritzVisionSegmentPredictor(o
 ```
 
 **3.x.x** - Accessing Vision Predictors with a loaded model (a class that extends FritzOnDeviceModel) to use immediately.
+
 ```
 FritzVisionObjectPredictor objectPredictor = FritzVision.ObjectDetection.getPredictor(onDeviceModel, options);
 FritzVisionStylePredictor stylePredictor = FritzVision.StyleTransfer.getPredictor(onDeviceModel, options);
@@ -423,7 +492,6 @@ FritzVisionSegmentPredictor segmentPredictor = FritzVision.ImageSegmentation.get
 - [Pose Estimation](https://docs.fritz.ai/develop/vision/pose-estimation/android.html)
 - [Tag + Metadata](https://docs.fritz.ai/develop/custom-models/tag-based/android.html)
 - [Custom Models with the Vision API](https://docs.fritz.ai/develop/vision/style-transfer/android.html#how-to-customize)
-
 
 ## [2.0.0]
 
@@ -447,6 +515,7 @@ There are several breaking changes from this release:
 - Module renaming - In your app/build.gradle file, change these module names
 
 Previous module names
+
 ```
 dependencies {
     // Image Labeling
@@ -479,20 +548,22 @@ dependencies {
 }
 ```
 
-- All FritzVisionPredictor's predict method now methods now return a ```FritzVisionResult``` object.
+- All FritzVisionPredictor's predict method now methods now return a `FritzVisionResult` object.
 
 Previously for object detection
+
 ```
 List<FritzVisionObject> visionObjects = objectPredictor.predict(fritzVisionImage);
 ```
 
 To
+
 ```
 FritzVisionObjectResult objectResult = objectPredictor.predict(fritzVisionImage);
 List<FritzVisionObject> visionObjects = objectResult.getVisionObjects();
 ```
 
-These classes have helper classes such as ```drawBoundingBoxes``` and ```drawVisionImage``` for your convenience.
+These classes have helper classes such as `drawBoundingBoxes` and `drawVisionImage` for your convenience.
 
 Please refer to the documentation to see the appropriate changes for each feature: https://docs.fritz.ai/
 
@@ -505,6 +576,7 @@ Bitmap resizedBitmap = FritzVisionImage.resize(image.getBitmap(), INPUT_SIZE, IN
 ```
 
 To:
+
 ```
 Bitmap resizedBitmap = BitmapUtils.resize(image.getBitmap(), INPUT_SIZE, INPUT_SIZE);
 ```
@@ -512,6 +584,7 @@ Bitmap resizedBitmap = BitmapUtils.resize(image.getBitmap(), INPUT_SIZE, INPUT_S
 - For custom model management, change the Job Service name in AndroidManifest.xml
 
 Previously
+
 ```
 <service
     android:name="ai.fritz.core.FritzJob"
@@ -520,6 +593,7 @@ Previously
 ```
 
 To
+
 ```
 <service
     android:name="ai.fritz.core.FritzCustomModelService"
@@ -530,6 +604,7 @@ To
 - For those of you using custom models, ModelSettings is now deprecated in favor of a CustomModel class.
 
 Previously
+
 ```
 
 FritzTFLiteInterpreter.create(new ModelSettings.Builder()
@@ -540,6 +615,7 @@ FritzTFLiteInterpreter.create(new ModelSettings.Builder()
 ```
 
 To:
+
 ```
 
 FritzTFLiteInterpreter.create(new MnistCustomModel());
@@ -548,15 +624,16 @@ FritzTFLiteInterpreter.create(new MnistCustomModel());
 
 To download the class for your model, please visit the webapp and under Custom Model > Your Model > SDK Instructions.
 
-
 - Removed singletons for predictors that developers can allocate separate interpreters.
 
 Previously
+
 ```
     FritzVisionObjectPredictor predictor = FritzVisionObjectPredictor.getInstance(this, options);
 ```
 
 To:
+
 ```
     FritzVisionObjectPredictor predictor = new FritzVisionObjectPredictor();
 ```
@@ -564,4 +641,3 @@ To:
 ## [1.4.0](https://github.com/fritzlabs/swift-framework/releases/tag/1.4.0)
 
 1. Allowing the ability to add a custom style transfer model
-
