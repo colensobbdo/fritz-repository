@@ -8,9 +8,9 @@ This repository contains all of the Frameworks that comprise the Fritz Android S
 
 ## Fritz AI 
 
-Fritz AI helps you teach your applications how to see, hear, feel, think, and sense. Create ML-powered features in your mobile apps for both Android and iOS. Start with our ready-to-use feature APIs or connect and deploy your own custom models.
+Fritz AI is the machine learning platform for iOS and Android developers. Teach your mobile apps to see, hear, sense, and think. Get started quickly with [our pre-trained APIs](https://www.fritz.ai/product/pretrained.html?utm_source=github&utm_campaign=fritz-repository), or use [our end-to-end platform](https://www.fritz.ai/product/platform.html?utm_source=github&utm_campaign=fritz-repository) to build and deploy your own custom models.
 
-[Sign up](https://app.fritz.ai/register?utm_source=github&utm_campaign=fritz-repository) for an account on Fritz AI in order to get started with machine learning in your apps.
+If you're ready to start building mobile apps powered by ML, [sign up](https://www.fritz.ai/pricing/?utm_source=github&utm_campaign=fritz-repository) for a free Fritz AI account.
 
 ## Installation
 
@@ -33,6 +33,6 @@ To keep tabs on what we’re up to, and for an inside look at the opportunities,
 ## Help
 For any questions or issues, you can:
 - Submit an issue on this repo
-- Go to our [Help Center](https://docs.fritz.ai/help-center/index.html?utm_source=github&utm_campaign=fritz-repository)
+- Visit our [Support Forum](https://support.fritz.ai?utm_source=github&utm_campaign=fritz-repository)
 - Message us directly in [Slack](https://fritz.ai/slack?utm_source=github&utm_campaign=fritz-repository)
 
