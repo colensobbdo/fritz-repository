@@ -1,14 +1,13 @@
 Fritz Android SDK
 ==================
 
-[ ![Codeship Status for fritzlabs/fritz-sdk-android](https://app.codeship.com/projects/c74152e0-65d1-0136-2d69-32e87736c6c6/status?branch=master)](https://app.codeship.com/projects/297281)
 [![Twitter](https://img.shields.io/badge/twitter-@fritzlabs-blue.svg?style=flat)](http://twitter.com/fritzlabs)
 
-This repository contains all of the Frameworks that comprise the Fritz Android SDK. See [releases](https://github.com/fritzlabs/swift-framework/releases) for the latest updates. 
+This repository contains all of the Frameworks that comprise the Fritz Android SDK. See [releases](https://github.com/fritzlabs/swift-framework/releases) for the latest updates.
 
-## Fritz AI 
+## Fritz AI
 
-Fritz AI is the machine learning platform for iOS and Android developers. Teach your mobile apps to see, hear, sense, and think. Get started quickly with [our pre-trained APIs](https://www.fritz.ai/product/pretrained.html?utm_source=github&utm_campaign=fritz-repository), or use [our end-to-end platform](https://www.fritz.ai/product/platform.html?utm_source=github&utm_campaign=fritz-repository) to build and deploy your own custom models.
+Fritz AI is the machine learning platform for iOS and Android developers. Teach your mobile apps to see, hear, sense, and think. Get started quickly with [our pre-trained APIs](https://www.fritz.ai/product/pretrained.html?utm_source=github&utm_campaign=fritz-repository), or use [Fritz AI Studio](https://www.fritz.ai/product/studio.html?utm_source=github&utm_campaign=fritz-repository) to build and deploy your own custom models.
 
 If you're ready to start building mobile apps powered by ML, [sign up](https://www.fritz.ai/pricing/?utm_source=github&utm_campaign=fritz-repository) for a free Fritz AI account.
 
