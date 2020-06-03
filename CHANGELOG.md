@@ -4,23 +4,32 @@
 
 ---
 
-## [6.0.0 (beta.2)]
+
+## [6.0.0]
+
 - Remove TFM library.
 - Merge the Fritz TFL interpreter with the core library.
 - Refactored core code to use Kotlin.
 - Moved session data into a manager class
-- Added in ability to record annotations from object detection and pose estimation predictors.
-- Fixed issue with landscape mode orientation being mirrored on the front facing camera.
-- Removed deprecated ImageRotation methods in favor of getting the ImageOrientation from the camera view.
+- Added in ability to record annotations from object detection predictors
+- Added in ability to record annotations from pose estimation predictors
+- Added in ability to record annotations from image segmentation predictors
+- Added in ability to record annotations from image labeling predictors
+- Fixed issue with landscape mode orientation being mirrored on the front facing camera
+- Removed deprecated ImageRotation methods in favor of getting the ImageOrientation from the camera view
+- Fix pose estimation post-processing for custom pose models.
+
 ```diff
 -        ImageRotation imageRotation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
 +        ImageOrientation orientation = FritzVisionOrientation.getImageRotationFromCamera(this, cameraId);
 
 
 -        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, imageRotation);
-+        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, orientation);
++        FritzVisionImage fritzVisionImage = FritzVisionImage.fromMediaImage(image, imageOrientation);
 ```
+
 - Change skeleton for Pose estimation to include a label (used in the Data Collection System)
+
 ```diff
 -        Skeleton humanSkeleton = new Skeleton(PART_NAMES, CONNECTED_PART_NAMES, POSE_CHAIN);
 +        Skeleton humanSkeleton = new Skeleton("Human", PART_NAMES, CONNECTED_PART_NAMES, POSE_CHAIN);
