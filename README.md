@@ -9,7 +9,7 @@ This repository contains all of the Frameworks that comprise the Fritz Android S
 
 Fritz AI is the machine learning platform for iOS and Android developers. Teach your mobile apps to see, hear, sense, and think. Get started quickly with [our pre-trained APIs](https://www.fritz.ai/product/pretrained.html?utm_source=github&utm_campaign=fritz-repository), or use [Fritz AI Studio](https://www.fritz.ai/product/studio.html?utm_source=github&utm_campaign=fritz-repository) to build and deploy your own custom models.
 
-If you're ready to start building mobile apps powered by ML, [sign up](https://www.fritz.ai/pricing/?utm_source=github&utm_campaign=fritz-repository) for a free Fritz AI account.
+If you're ready to start building mobile apps powered by ML, [sign up](https://www.fritz.ai/pricing/?utm_source=github&utm_campaign=fritz-repository) for a Fritz AI account.
 
 ## Installation
 
